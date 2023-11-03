@@ -17,12 +17,11 @@ dt = 0
 cursor_x = WINDOW_WIDTH / 2 - 50
 
 engine = Engine()
-ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
-ball.speed.x = -100
+ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2) #WINDOW_WIDTH / 2
 pallet_j1 = Pallets(cursor_x, 40)
 pallet_j2 = Pallets(cursor_x, WINDOW_HEIGHT - 40)
-engine.dropPallets(pallet_j1.position.x, pallet_j1.position.y)
-engine.dropPallets(pallet_j2.position.x, pallet_j2.position.y)
+engine.dropPallets(pallet_j1.x, pallet_j1.y)
+engine.dropPallets(pallet_j2.x, pallet_j2.y)
 
 while running:
     for event in pygame.event.get():
@@ -30,7 +29,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                engine.dropBall(ball.position.x, ball.position.y) # TODO : a terme, revoir la gestion d'appartition des balles
+                engine.dropBall(ball.x, ball.y) # TODO : a terme, revoir la gestion d'appartition des balles
 
     engine.update(dt)
     engine.drawBackground(screen)

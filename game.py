@@ -5,8 +5,8 @@ BOX_COLOR = 'white'
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 800
 CURSOR_SPEED = 200
-BALL_SPEED_X = 150
-BALL_SPEED_Y = 150
+BALL_SPEED_X = 200
+BALL_SPEED_Y = -150
 BOX_THICKNESS = 20
 BOX_OFFSET_TOP = 0
 BOX_OFFSET_HORIZ = 0
@@ -19,43 +19,61 @@ LENGTH_PALLETS = 100
 
 class Engine:
     def __init__(self):
-        self.score = 0
+        self.score = [0, 0]
         self.ball = []
         self.pallets = []
 
     def update(self, dt):
         global BALL_SPEED_X, BALL_SPEED_Y
-        for ball in self.ball:
-            ball.position.x -= BALL_SPEED_X * dt
-            ball.position.y -= BALL_SPEED_Y * dt
-            if (ball.position.x - ball.radius) <= (BOX_POSITION_LEFT + BOX_THICKNESS):
+        for ball in self.ball:  # TODO : a terme, revoir la gestion des balles
+            ball.x -= BALL_SPEED_X * dt
+            ball.y -= BALL_SPEED_Y * dt
+            if (ball.x - ball.radius) <= (BOX_POSITION_LEFT + BOX_THICKNESS):
                 BALL_SPEED_X = -BALL_SPEED_X
-            if (ball.position.x + ball.radius) >= BOX_POSITION_RIGHT:
+            if (ball.x + ball.radius) >= BOX_POSITION_RIGHT:
                 BALL_SPEED_X = -BALL_SPEED_X
-            if ball.position.y <= (BOX_THICKNESS + ball.radius):
+
+            if (ball.y <= BOX_OFFSET_TOP) and ((ball.x - ball.radius) >= (WINDOW_WIDTH / 4)) and (
+                    (ball.x + ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+                self.score[0] += 1
+                print(self.score)
+                ball.x = WINDOW_WIDTH / 2
+                ball.y = WINDOW_HEIGHT / 2
+                BALL_SPEED_X = -BALL_SPEED_X
                 BALL_SPEED_Y = -BALL_SPEED_Y
-            if (ball.position.y + ball.radius) >= BOX_POSITION_BOTTOM:
+            if (ball.y <= (BOX_THICKNESS + ball.radius)) and (ball.x - ball.radius) < (WINDOW_WIDTH / 4):
+                BALL_SPEED_Y = -BALL_SPEED_Y
+            if (ball.y <= (BOX_THICKNESS + ball.radius)) and (ball.x + ball.radius) > (3 * WINDOW_WIDTH / 4):
                 BALL_SPEED_Y = -BALL_SPEED_Y
 
-            ball.update(dt)
+            if (ball.y >= WINDOW_HEIGHT) and ((ball.x - ball.radius) >= (WINDOW_WIDTH / 4)) and (
+                    (ball.x + ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+                self.score[1] += 1
+                print(self.score)
+                ball.x = WINDOW_WIDTH / 2
+                ball.y = WINDOW_HEIGHT / 2
+                BALL_SPEED_X = -BALL_SPEED_X
+                BALL_SPEED_Y = -BALL_SPEED_Y
+            if (ball.y + ball.radius >= BOX_POSITION_BOTTOM) and (ball.x - ball.radius) < (WINDOW_WIDTH / 4):
+                BALL_SPEED_Y = -BALL_SPEED_Y
+            if (ball.y + ball.radius >= BOX_POSITION_BOTTOM) and (ball.x + ball.radius) > (3 * WINDOW_WIDTH / 4):
+                BALL_SPEED_Y = -BALL_SPEED_Y
 
         for pallet in self.pallets:
             keys_pressed = pygame.key.get_pressed()
             if keys_pressed[pygame.K_LEFT]:
-                pallet.position.x -= CURSOR_SPEED * dt
+                pallet.x -= CURSOR_SPEED * dt
             if keys_pressed[pygame.K_RIGHT]:
-                pallet.position.x += CURSOR_SPEED * dt
+                pallet.x += CURSOR_SPEED * dt
             # Détection d'une collision entre le pallet et le mur gauche
-            if pallet.position.x <= (BOX_POSITION_LEFT + BOX_THICKNESS):
+            if pallet.x <= (BOX_POSITION_LEFT + BOX_THICKNESS):
                 # on fige la position du pallet pour qu'il n'aille pas plus loin
-                pallet.position.x = BOX_POSITION_LEFT + BOX_THICKNESS
+                pallet.x = BOX_POSITION_LEFT + BOX_THICKNESS
 
             # Détection d'une collision entre le pallet et le mur droit
-            if pallet.position.x + LENGTH_PALLETS >= BOX_POSITION_RIGHT:
+            if pallet.x + LENGTH_PALLETS >= BOX_POSITION_RIGHT:
                 # on fige la position du pallet pour qu'il n'aille pas plus loin
-                pallet.position.x = BOX_POSITION_RIGHT - LENGTH_PALLETS
-
-            pallet.update(dt)
+                pallet.x = BOX_POSITION_RIGHT - LENGTH_PALLETS
 
     def drawBackground(self, screen):
         screen.fill(BACKGROUND_COLOR)
