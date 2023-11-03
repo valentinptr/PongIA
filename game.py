@@ -1,3 +1,4 @@
+import random
 from objects import *
 
 BACKGROUND_COLOR = 'black'
@@ -5,8 +6,6 @@ BOX_COLOR = 'white'
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 800
 CURSOR_SPEED = 200
-BALL_SPEED_X = 200
-BALL_SPEED_Y = 200
 BOX_THICKNESS = 20
 BOX_OFFSET_TOP = 0
 BOX_OFFSET_HORIZ = 0
@@ -17,13 +16,25 @@ BOX_POSITION_BOTTOM = WINDOW_HEIGHT - BOX_THICKNESS
 LENGTH_PALLETS = 100
 
 
+def direction():
+    speed = random.randint(100, 400)
+    sign = random.randint(0, 100000000)
+    if (sign % 2) == 0:
+        speed = -speed
+    return speed
+
+
+BALL_SPEED_X = direction()
+BALL_SPEED_Y = direction()
+
+
 class Engine:
     def __init__(self):
         self.score = [0, 0]
         self.ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         self.pallets = []
 
-    def update(self, dt):  # TODO : ajouter un mode de démarrage de la balle aléatoire
+    def update(self, dt):
         global BALL_SPEED_X, BALL_SPEED_Y
 
         self.ball.x -= BALL_SPEED_X * dt
@@ -38,11 +49,10 @@ class Engine:
         if (self.ball.y <= BOX_OFFSET_TOP) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
                 (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
             self.score[1] += 1
-            print(self.score)
             self.ball.x = WINDOW_WIDTH / 2
             self.ball.y = WINDOW_HEIGHT / 2
-            BALL_SPEED_X = -BALL_SPEED_X
-            BALL_SPEED_Y = -BALL_SPEED_Y
+            BALL_SPEED_X = direction()
+            BALL_SPEED_Y = direction()
 
         if (self.ball.y <= (BOX_THICKNESS + self.ball.radius)) and (
                 self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
@@ -55,11 +65,10 @@ class Engine:
         if (self.ball.y >= WINDOW_HEIGHT) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
                 (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
             self.score[0] += 1
-            print(self.score)
             self.ball.x = WINDOW_WIDTH / 2
             self.ball.y = WINDOW_HEIGHT / 2
-            BALL_SPEED_X = -BALL_SPEED_X
-            BALL_SPEED_Y = -BALL_SPEED_Y
+            BALL_SPEED_X = direction()
+            BALL_SPEED_Y = direction()
 
         if (self.ball.y + self.ball.radius >= BOX_POSITION_BOTTOM) and (
                 self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
