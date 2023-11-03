@@ -37,7 +37,7 @@ class Engine:
 
         if (self.ball.y <= BOX_OFFSET_TOP) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
                 (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
-            self.score[0] += 1
+            self.score[1] += 1
             print(self.score)
             self.ball.x = WINDOW_WIDTH / 2
             self.ball.y = WINDOW_HEIGHT / 2
@@ -54,7 +54,7 @@ class Engine:
 
         if (self.ball.y >= WINDOW_HEIGHT) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
                 (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
-            self.score[1] += 1
+            self.score[0] += 1
             print(self.score)
             self.ball.x = WINDOW_WIDTH / 2
             self.ball.y = WINDOW_HEIGHT / 2
