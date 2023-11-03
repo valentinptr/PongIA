@@ -17,7 +17,6 @@ dt = 0
 cursor_x = WINDOW_WIDTH / 2 - 50
 
 engine = Engine()
-ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2) #WINDOW_WIDTH / 2
 pallet_j1 = Pallets(cursor_x, 40)
 pallet_j2 = Pallets(cursor_x, WINDOW_HEIGHT - 40)
 engine.dropPallets(pallet_j1.x, pallet_j1.y)
@@ -27,14 +26,17 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                engine.dropBall(ball.x, ball.y) # TODO : a terme, revoir la gestion d'appartition des balles
 
     engine.update(dt)
     engine.drawBackground(screen)
     engine.drawBall(screen)
     engine.drawPallets(screen)
+
+    font = pygame.font.SysFont("Arial", 50)
+    text_render1 = font.render(f'{engine.score[0]}', True, 'white')
+    text_render2 = font.render(f'{engine.score[1]}', True, 'white')
+    screen.blit(text_render1, ((WINDOW_WIDTH / 2) - 10, (WINDOW_HEIGHT / 2) - 100))
+    screen.blit(text_render2, ((WINDOW_WIDTH / 2) - 10, (WINDOW_HEIGHT / 2) + 50))
 
     pygame.display.flip()
     dt = clock.tick(FPS) / 1000

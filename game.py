@@ -6,7 +6,7 @@ WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 800
 CURSOR_SPEED = 200
 BALL_SPEED_X = 200
-BALL_SPEED_Y = -150
+BALL_SPEED_Y = 200
 BOX_THICKNESS = 20
 BOX_OFFSET_TOP = 0
 BOX_OFFSET_HORIZ = 0
@@ -20,44 +20,54 @@ LENGTH_PALLETS = 100
 class Engine:
     def __init__(self):
         self.score = [0, 0]
-        self.ball = []
+        self.ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         self.pallets = []
 
-    def update(self, dt):
+    def update(self, dt):  # TODO : ajouter un mode de démarrage de la balle aléatoire
         global BALL_SPEED_X, BALL_SPEED_Y
-        for ball in self.ball:  # TODO : a terme, revoir la gestion des balles
-            ball.x -= BALL_SPEED_X * dt
-            ball.y -= BALL_SPEED_Y * dt
-            if (ball.x - ball.radius) <= (BOX_POSITION_LEFT + BOX_THICKNESS):
-                BALL_SPEED_X = -BALL_SPEED_X
-            if (ball.x + ball.radius) >= BOX_POSITION_RIGHT:
-                BALL_SPEED_X = -BALL_SPEED_X
 
-            if (ball.y <= BOX_OFFSET_TOP) and ((ball.x - ball.radius) >= (WINDOW_WIDTH / 4)) and (
-                    (ball.x + ball.radius) <= (3 * WINDOW_WIDTH / 4)):
-                self.score[0] += 1
-                print(self.score)
-                ball.x = WINDOW_WIDTH / 2
-                ball.y = WINDOW_HEIGHT / 2
-                BALL_SPEED_X = -BALL_SPEED_X
-                BALL_SPEED_Y = -BALL_SPEED_Y
-            if (ball.y <= (BOX_THICKNESS + ball.radius)) and (ball.x - ball.radius) < (WINDOW_WIDTH / 4):
-                BALL_SPEED_Y = -BALL_SPEED_Y
-            if (ball.y <= (BOX_THICKNESS + ball.radius)) and (ball.x + ball.radius) > (3 * WINDOW_WIDTH / 4):
-                BALL_SPEED_Y = -BALL_SPEED_Y
+        self.ball.x -= BALL_SPEED_X * dt
+        self.ball.y -= BALL_SPEED_Y * dt
 
-            if (ball.y >= WINDOW_HEIGHT) and ((ball.x - ball.radius) >= (WINDOW_WIDTH / 4)) and (
-                    (ball.x + ball.radius) <= (3 * WINDOW_WIDTH / 4)):
-                self.score[1] += 1
-                print(self.score)
-                ball.x = WINDOW_WIDTH / 2
-                ball.y = WINDOW_HEIGHT / 2
-                BALL_SPEED_X = -BALL_SPEED_X
-                BALL_SPEED_Y = -BALL_SPEED_Y
-            if (ball.y + ball.radius >= BOX_POSITION_BOTTOM) and (ball.x - ball.radius) < (WINDOW_WIDTH / 4):
-                BALL_SPEED_Y = -BALL_SPEED_Y
-            if (ball.y + ball.radius >= BOX_POSITION_BOTTOM) and (ball.x + ball.radius) > (3 * WINDOW_WIDTH / 4):
-                BALL_SPEED_Y = -BALL_SPEED_Y
+        if (self.ball.x - self.ball.radius) <= (BOX_POSITION_LEFT + BOX_THICKNESS):
+            BALL_SPEED_X = -BALL_SPEED_X
+
+        if (self.ball.x + self.ball.radius) >= BOX_POSITION_RIGHT:
+            BALL_SPEED_X = -BALL_SPEED_X
+
+        if (self.ball.y <= BOX_OFFSET_TOP) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
+                (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+            self.score[0] += 1
+            print(self.score)
+            self.ball.x = WINDOW_WIDTH / 2
+            self.ball.y = WINDOW_HEIGHT / 2
+            BALL_SPEED_X = -BALL_SPEED_X
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+        if (self.ball.y <= (BOX_THICKNESS + self.ball.radius)) and (
+                self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+        if (self.ball.y <= (BOX_THICKNESS + self.ball.radius)) and (
+                self.ball.x + self.ball.radius) > (3 * WINDOW_WIDTH / 4):
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+        if (self.ball.y >= WINDOW_HEIGHT) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
+                (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+            self.score[1] += 1
+            print(self.score)
+            self.ball.x = WINDOW_WIDTH / 2
+            self.ball.y = WINDOW_HEIGHT / 2
+            BALL_SPEED_X = -BALL_SPEED_X
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+        if (self.ball.y + self.ball.radius >= BOX_POSITION_BOTTOM) and (
+                self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+        if (self.ball.y + self.ball.radius >= BOX_POSITION_BOTTOM) and (
+                self.ball.x + self.ball.radius) > (3 * WINDOW_WIDTH / 4):
+            BALL_SPEED_Y = -BALL_SPEED_Y
 
         for pallet in self.pallets:
             keys_pressed = pygame.key.get_pressed()
@@ -71,11 +81,21 @@ class Engine:
                 pallet.x = BOX_POSITION_LEFT + BOX_THICKNESS
 
             # Détection d'une collision entre le pallet et le mur droit
-            if pallet.x + LENGTH_PALLETS >= BOX_POSITION_RIGHT:
+            if (pallet.x + LENGTH_PALLETS) >= BOX_POSITION_RIGHT:
                 # on fige la position du pallet pour qu'il n'aille pas plus loin
                 pallet.x = BOX_POSITION_RIGHT - LENGTH_PALLETS
 
-    def drawBackground(self, screen):
+        if (self.ball.y - self.ball.radius) <= self.pallets[0].y and (
+                (self.ball.x + self.ball.radius) >= self.pallets[0].x) and (
+                (self.ball.x - self.ball.radius) <= (self.pallets[0].x + LENGTH_PALLETS)):
+            BALL_SPEED_Y = -BALL_SPEED_Y
+        if (self.ball.y + self.ball.radius) >= self.pallets[1].y and (
+                (self.ball.x + self.ball.radius) >= self.pallets[1].x) and (
+                (self.ball.x - self.ball.radius) <= (self.pallets[1].x + LENGTH_PALLETS)):
+            BALL_SPEED_Y = -BALL_SPEED_Y
+
+    @staticmethod
+    def drawBackground(screen):
         screen.fill(BACKGROUND_COLOR)
 
         # Left wall
@@ -109,9 +129,8 @@ class Engine:
                                              (WINDOW_WIDTH / 4) - BOX_THICKNESS,
                                              BOX_THICKNESS))
 
-    def drawBall(self, screen):  # TODO : voir pour optimiser cette partie étant donné qu'il n'y a qu'une balle
-        for ball in self.ball:
-            ball.draw(screen)
+    def drawBall(self, screen):
+        self.ball.draw(screen)
 
     def drawPallets(self, screen):
         for pallet in self.pallets:
@@ -121,8 +140,3 @@ class Engine:
         new_pallets = Pallets(x, y)
         self.pallets.append(new_pallets)
         return new_pallets
-
-    def dropBall(self, x, y):
-        new_ball = Ball(x, y)
-        self.ball.append(new_ball)
-        return new_ball

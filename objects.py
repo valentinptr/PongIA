@@ -1,6 +1,8 @@
 import pygame
 from pygame import gfxdraw
 
+LENGTH_PALLETS = 100
+
 
 class Ball:
     def __init__(self, x, y):
@@ -31,4 +33,4 @@ class Pallets:
 
     def draw(self, screen):
         pygame.draw.aaline(screen, self.color, (self.x, self.y),
-                           (self.x + 100, self.y))
+                           (self.x + LENGTH_PALLETS, self.y))
