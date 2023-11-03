@@ -6,6 +6,7 @@ BOX_COLOR = 'white'
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 800
 CURSOR_SPEED = 200
+CURSOR_SPEED_IA = 10
 BOX_THICKNESS = 20
 BOX_OFFSET_TOP = 0
 BOX_OFFSET_HORIZ = 0
@@ -14,10 +15,12 @@ BOX_POSITION_LEFT = BOX_OFFSET_HORIZ
 BOX_POSITION_RIGHT = WINDOW_WIDTH - BOX_THICKNESS
 BOX_POSITION_BOTTOM = WINDOW_HEIGHT - BOX_THICKNESS
 LENGTH_PALLETS = 100
+MIN_SPEED = 50
+MAX_SPEED = 300
 
 
 def direction():
-    speed = random.randint(100, 400)
+    speed = random.randint(MIN_SPEED, MAX_SPEED)
     sign = random.randint(0, 100000000)
     if (sign % 2) == 0:
         speed = -speed
@@ -78,12 +81,29 @@ class Engine:
                 self.ball.x + self.ball.radius) > (3 * WINDOW_WIDTH / 4):
             BALL_SPEED_Y = -BALL_SPEED_Y
 
+        # Controle du pallet 1 via les touches du clavier
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_LEFT]:
+            self.pallets[0].x -= CURSOR_SPEED * dt
+        if keys_pressed[pygame.K_RIGHT]:
+            self.pallets[0].x += CURSOR_SPEED * dt
+
+        # Gestion autonome du pallet 2
+        if self.ball.y > 600:
+            if self.ball.x < WINDOW_WIDTH/2:
+                self.pallets[1].x -= CURSOR_SPEED_IA * dt
+            elif self.ball.x > WINDOW_WIDTH/2:
+                self.pallets[1].x += CURSOR_SPEED_IA * dt
+        else:
+            if self.pallets[1].x < (WINDOW_WIDTH / 2 - 50):
+                self.pallets[1].x += CURSOR_SPEED * dt
+            elif self.pallets[1].x > (WINDOW_WIDTH / 2 - 50):
+                self.pallets[1].x -= CURSOR_SPEED * dt
+            else:
+                self.pallets[1].x = WINDOW_WIDTH / 2 - 50
+
+        # sécurité pour que les pallets ne sortent pas du cadre
         for pallet in self.pallets:
-            keys_pressed = pygame.key.get_pressed()
-            if keys_pressed[pygame.K_LEFT]:
-                pallet.x -= CURSOR_SPEED * dt
-            if keys_pressed[pygame.K_RIGHT]:
-                pallet.x += CURSOR_SPEED * dt
             # Détection d'une collision entre le pallet et le mur gauche
             if pallet.x <= (BOX_POSITION_LEFT + BOX_THICKNESS):
                 # on fige la position du pallet pour qu'il n'aille pas plus loin
