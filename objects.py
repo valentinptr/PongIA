@@ -34,9 +34,9 @@ class Pallets:
         self.position = pygame.math.Vector2(x, y)
         self.speed = pygame.math.Vector2()
 
-    def draw(self, screen):  # TODO :  ajouter les pallets
-        c = 0
-        pygame.draw.aaline(screen, self.color, (self.position.x, self.position.y), (self.position.x + 100, self.position.y))
+    def draw(self, screen):
+        pygame.draw.aaline(screen, self.color, (self.position.x, self.position.y),
+                           (self.position.x + 100, self.position.y))
 
     def update(self, dt):
         self.position += self.speed * dt
