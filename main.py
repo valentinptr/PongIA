@@ -19,8 +19,8 @@ cursor_x = WINDOW_WIDTH / 2 - 50
 engine = Engine()
 pallet_j1 = Pallets(cursor_x, 40)
 pallet_j2 = Pallets(cursor_x, WINDOW_HEIGHT - 40)
-engine.dropPallets(pallet_j1.x, pallet_j1.y)
-engine.dropPallets(pallet_j2.x, pallet_j2.y)
+engine.drop_pallets(pallet_j1.x, pallet_j1.y)
+engine.drop_pallets(pallet_j2.x, pallet_j2.y)
 
 while running:
     for event in pygame.event.get():
@@ -28,9 +28,9 @@ while running:
             running = False
 
     engine.update(dt)
-    engine.drawBackground(screen)
-    engine.drawBall(screen)
-    engine.drawPallets(screen)
+    engine.draw_background(screen)
+    engine.draw_ball(screen)
+    engine.draw_pallets(screen)
 
     font = pygame.font.SysFont("Arial", 50)
     text_render1 = font.render(f'{engine.score[0]}', True, 'white')
