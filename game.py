@@ -52,8 +52,6 @@ class Engine:
         """
         global BALL_SPEED_X, BALL_SPEED_Y
 
-        print(self.ball.x, self.ball.y, BALL_SPEED_X, BALL_SPEED_Y)
-
         # initialization of the X and Y speed of the ball
         self.ball.x += int(BALL_SPEED_X * dt)
         self.ball.y += int(BALL_SPEED_Y * dt)
