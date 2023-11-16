@@ -52,55 +52,37 @@ class Engine:
         """
         global BALL_SPEED_X, BALL_SPEED_Y
 
+        print(self.ball.x, self.ball.y, BALL_SPEED_X, BALL_SPEED_Y)
+
         # initialization of the X and Y speed of the ball
-        self.ball.x -= BALL_SPEED_X * dt
-        self.ball.y -= BALL_SPEED_Y * dt
+        self.ball.x += int(BALL_SPEED_X * dt)
+        self.ball.y += int(BALL_SPEED_Y * dt)
 
         # used to check if the ball as collided with the left wall
-        if (self.ball.x - self.ball.radius) <= (BOX_POSITION_LEFT + BOX_THICKNESS):
+        if (self.ball.x - self.ball.radius) < (BOX_POSITION_LEFT + BOX_THICKNESS):
+            self.ball.x = BOX_POSITION_LEFT + BOX_THICKNESS + self.ball.radius
             BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
 
         # used to check if the ball as collided with the right wall
-        if (self.ball.x + self.ball.radius) >= BOX_POSITION_RIGHT:
+        if (self.ball.x + self.ball.radius) > BOX_POSITION_RIGHT:
+            self.ball.x = BOX_POSITION_RIGHT - self.ball.radius
             BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
 
         # used to check if the ball as entered the upper goal
-        if (self.ball.y <= BOX_OFFSET_TOP) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
-                (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+        if self.ball.y < BOX_OFFSET_TOP:
             self.score[1] += 1  # the score is updated
             self.ball.x = WINDOW_WIDTH / 2  # the ball goes back to the center of the window
             self.ball.y = WINDOW_HEIGHT / 2  # the ball goes back to the center of the window
             BALL_SPEED_X = direction()  # a new X speed is called
             BALL_SPEED_Y = direction()  # a new Y speed is called
 
-        # used to check if the ball as collided with the upper left wall
-        if (self.ball.y <= (BOX_THICKNESS + self.ball.radius)) and (
-                self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
-            BALL_SPEED_Y = -BALL_SPEED_Y
-
-        # used to check if the ball as collided with the upper right wall
-        if (self.ball.y <= (BOX_THICKNESS + self.ball.radius)) and (
-                self.ball.x + self.ball.radius) > (3 * WINDOW_WIDTH / 4):
-            BALL_SPEED_Y = -BALL_SPEED_Y
-
         # used to check if the ball as entered the lower goal
-        if (self.ball.y >= WINDOW_HEIGHT) and ((self.ball.x - self.ball.radius) >= (WINDOW_WIDTH / 4)) and (
-                (self.ball.x + self.ball.radius) <= (3 * WINDOW_WIDTH / 4)):
+        if self.ball.y > WINDOW_HEIGHT:
             self.score[0] += 1
             self.ball.x = WINDOW_WIDTH / 2
             self.ball.y = WINDOW_HEIGHT / 2
             BALL_SPEED_X = direction()
             BALL_SPEED_Y = direction()
-
-        # used to check if the ball as collided with the lower left wall
-        if (self.ball.y + self.ball.radius >= BOX_POSITION_BOTTOM) and (
-                self.ball.x - self.ball.radius) < (WINDOW_WIDTH / 4):
-            BALL_SPEED_Y = -BALL_SPEED_Y
-
-        # used to check if the ball as collided with the lower right wall
-        if (self.ball.y + self.ball.radius >= BOX_POSITION_BOTTOM) and (
-                self.ball.x + self.ball.radius) > (3 * WINDOW_WIDTH / 4):
-            BALL_SPEED_Y = -BALL_SPEED_Y
 
         # used to control the pallet 1 with the keyboard
         keys_pressed = pygame.key.get_pressed()
@@ -136,15 +118,17 @@ class Engine:
                 pallet.x = BOX_POSITION_RIGHT - LENGTH_PALLETS
 
         # used to check is there is a collision between the ball and the pallet 1
-        if (self.ball.y - self.ball.radius) <= self.pallets[0].y and (
-                (self.ball.x + self.ball.radius) >= self.pallets[0].x) and (
-                (self.ball.x - self.ball.radius) <= (self.pallets[0].x + LENGTH_PALLETS)):
+        if (self.ball.y - self.ball.radius) < self.pallets[0].y and (
+                (self.ball.x + self.ball.radius) > self.pallets[0].x) and (
+                (self.ball.x - self.ball.radius) < (self.pallets[0].x + LENGTH_PALLETS)):
+            self.ball.y = self.pallets[0].y + self.ball.radius
             BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
         # used to check is there is a collision between the ball and the pallet 2
-        if (self.ball.y + self.ball.radius) >= self.pallets[1].y and (
-                (self.ball.x + self.ball.radius) >= self.pallets[1].x) and (
-                (self.ball.x - self.ball.radius) <= (self.pallets[1].x + LENGTH_PALLETS)):
+        if (self.ball.y + self.ball.radius) > self.pallets[1].y and (
+                (self.ball.x + self.ball.radius) > self.pallets[1].x) and (
+                (self.ball.x - self.ball.radius) < (self.pallets[1].x + LENGTH_PALLETS)):
+            self.ball.y = self.pallets[1].y - self.ball.radius
             BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
     @staticmethod
@@ -167,26 +151,6 @@ class Engine:
                                              BOX_OFFSET_TOP,
                                              BOX_THICKNESS,
                                              WINDOW_HEIGHT))
-        # Top left wall
-        pygame.draw.rect(screen, BOX_COLOR, (BOX_THICKNESS,
-                                             0,
-                                             (WINDOW_WIDTH / 4) - BOX_THICKNESS,
-                                             BOX_THICKNESS))
-        # Top right wall
-        pygame.draw.rect(screen, BOX_COLOR, ((3 * WINDOW_WIDTH / 4),
-                                             0,
-                                             (WINDOW_WIDTH / 4) - BOX_THICKNESS,
-                                             BOX_THICKNESS))
-        # Bottom left wall
-        pygame.draw.rect(screen, BOX_COLOR, (BOX_THICKNESS,
-                                             BOX_POSITION_BOTTOM,
-                                             (WINDOW_WIDTH / 4) - BOX_THICKNESS,
-                                             BOX_THICKNESS))
-        # Bottom right wall
-        pygame.draw.rect(screen, BOX_COLOR, ((3 * WINDOW_WIDTH / 4),
-                                             BOX_POSITION_BOTTOM,
-                                             (WINDOW_WIDTH / 4) - BOX_THICKNESS,
-                                             BOX_THICKNESS))
 
     def draw_ball(self, screen):
         """
