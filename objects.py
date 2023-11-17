@@ -1,7 +1,7 @@
 import pygame
 from pygame import gfxdraw
 
-LENGTH_PALLETS = 100
+LENGTH_PALLETS = 150
 RADIUS = 30
 
 

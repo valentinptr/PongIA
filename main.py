@@ -1,11 +1,14 @@
+import game
 from game import *
 from objects import *
 
 FPS = 60
 fpsClock = pygame.time.Clock()
 
-WINDOW_WIDTH = 600
-WINDOW_HEIGHT = 800
+WINDOW_WIDTH = game.WINDOW_WIDTH
+WINDOW_HEIGHT = game.WINDOW_HEIGHT
+
+SCORE_TO_WIN = 10
 
 pygame.init()
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -22,6 +25,8 @@ pallet_j2 = Pallets(cursor_x, WINDOW_HEIGHT - 40)
 engine.drop_pallets(pallet_j1.x, pallet_j1.y)
 engine.drop_pallets(pallet_j2.x, pallet_j2.y)
 
+font = pygame.font.SysFont("Arial", 50)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -32,7 +37,17 @@ while running:
     engine.draw_ball(screen)
     engine.draw_pallets(screen)
 
-    font = pygame.font.SysFont("Arial", 50)
+    if engine.score[0] == SCORE_TO_WIN:
+        engine.parties[0] += 1
+        print(f'Player 1 WON : P1 : {engine.parties[0]}, P2 : {engine.parties[1]}')
+        engine.score[0] = 0
+        engine.score[1] = 0
+    elif engine.score[1] == SCORE_TO_WIN:
+        engine.parties[1] += 1
+        print(f'Player 2 WON : P1 : {engine.parties[0]}, P2 : {engine.parties[1]}')
+        engine.score[0] = 0
+        engine.score[1] = 0
+
     text_render1 = font.render(f'{engine.score[0]}', True, 'white')
     text_render2 = font.render(f'{engine.score[1]}', True, 'white')
     screen.blit(text_render1, ((WINDOW_WIDTH / 2) - 10, (WINDOW_HEIGHT / 2) - 100))

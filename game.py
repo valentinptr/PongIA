@@ -1,4 +1,6 @@
 import random
+
+import objects
 from objects import *
 
 BACKGROUND_COLOR = 'black'
@@ -14,8 +16,8 @@ BOX_OFFSET_BOTTOM = 100
 BOX_POSITION_LEFT = BOX_OFFSET_HORIZ
 BOX_POSITION_RIGHT = WINDOW_WIDTH - BOX_THICKNESS
 BOX_POSITION_BOTTOM = WINDOW_HEIGHT - BOX_THICKNESS
-LENGTH_PALLETS = 100
-BORDER_PALLETS = 45
+LENGTH_PALLETS = objects.LENGTH_PALLETS
+BORDER_PALLETS = 10
 MIN_SPEED = 200
 MAX_SPEED = 500
 
@@ -42,6 +44,7 @@ class Engine:
         this is the init function of the class Engine
         """
         self.score = [0, 0]  # [0] : player 1 and [1] for player 2
+        self.parties = [0, 0]  # [0] : player 1 and [1] for player 2
         self.ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)  # initialization of the ball
         self.pallets = []  # initialization of the 2 pallets
 
@@ -126,16 +129,24 @@ class Engine:
         if (self.ball.y - self.ball.radius) < self.pallets[0].y and (
                 (self.ball.x + self.ball.radius) > self.pallets[0].x) and (
                 (self.ball.x - self.ball.radius) < (self.pallets[0].x + BORDER_PALLETS)):
-            self.ball.y = self.pallets[0].y + self.ball.radius
-            BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            if BALL_SPEED_Y > 0:
+                self.ball.y = self.pallets[0].y + self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+                BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            else:
+                self.ball.y = self.pallets[0].y + self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
         if (self.ball.y - self.ball.radius) < self.pallets[0].y and (
                 (self.ball.x + self.ball.radius) > self.pallets[0].x + LENGTH_PALLETS - BORDER_PALLETS) and (
                 (self.ball.x - self.ball.radius) < (self.pallets[0].x + LENGTH_PALLETS)):
-            self.ball.y = self.pallets[0].y + self.ball.radius
-            BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            if BALL_SPEED_Y < 0:
+                self.ball.y = self.pallets[0].y + self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+                BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            else:
+                self.ball.y = self.pallets[0].y + self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
         # used to check is there is a collision between the ball and the pallet 2
         if (self.ball.y + self.ball.radius) > self.pallets[1].y and (
@@ -143,21 +154,41 @@ class Engine:
                 (self.ball.x - self.ball.radius) < (self.pallets[1].x + LENGTH_PALLETS - BORDER_PALLETS)):
             self.ball.y = self.pallets[1].y - self.ball.radius
             BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
 
         if (self.ball.y + self.ball.radius) > self.pallets[1].y and (
                 (self.ball.x + self.ball.radius) > self.pallets[1].x) and (
                 (self.ball.x - self.ball.radius) < (self.pallets[1].x + BORDER_PALLETS)):
-            self.ball.y = self.pallets[1].y - self.ball.radius
-            BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            if BALL_SPEED_Y > 0:
+                self.ball.y = self.pallets[1].y - self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+                BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            else:
+                self.ball.y = self.pallets[1].y - self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
         if (self.ball.y + self.ball.radius) > self.pallets[1].y and (
                 (self.ball.x + self.ball.radius) > self.pallets[1].x + LENGTH_PALLETS - BORDER_PALLETS) and (
                 (self.ball.x - self.ball.radius) < (self.pallets[1].x + LENGTH_PALLETS)):
-            self.ball.y = self.pallets[1].y - self.ball.radius
-            BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            if BALL_SPEED_Y < 0:
+                self.ball.y = self.pallets[1].y - self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+                BALL_SPEED_X = -BALL_SPEED_X  # the X speed is then reversed
+            else:
+                self.ball.y = self.pallets[1].y - self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+
+        """
+        if (((self.ball.x + self.ball.radius) > (self.pallets[1].x + LENGTH_PALLETS - BORDER_PALLETS) or
+                (self.ball.x - self.ball.radius) < (self.pallets[0].x + LENGTH_PALLETS - BORDER_PALLETS)) and
+                ((self.ball.x - self.ball.radius) < (self.pallets[1].x + LENGTH_PALLETS) or
+                    (self.ball.x + self.ball.radius) > (self.pallets[0].x + BORDER_PALLETS))):
+            if (self.ball.y + self.ball.radius) > self.pallets[1].y:
+                self.ball.y = self.pallets[1].y - self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+            elif (self.ball.y - self.ball.radius) < self.pallets[0].y:
+                self.ball.y = self.pallets[0].y + self.ball.radius
+                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
+                """
 
     @staticmethod
     def draw_background(screen):
