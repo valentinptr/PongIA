@@ -177,19 +177,6 @@ class Engine:
                 self.ball.y = self.pallets[1].y - self.ball.radius
                 BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
 
-        """
-        if (((self.ball.x + self.ball.radius) > (self.pallets[1].x + LENGTH_PALLETS - BORDER_PALLETS) or
-                (self.ball.x - self.ball.radius) < (self.pallets[0].x + LENGTH_PALLETS - BORDER_PALLETS)) and
-                ((self.ball.x - self.ball.radius) < (self.pallets[1].x + LENGTH_PALLETS) or
-                    (self.ball.x + self.ball.radius) > (self.pallets[0].x + BORDER_PALLETS))):
-            if (self.ball.y + self.ball.radius) > self.pallets[1].y:
-                self.ball.y = self.pallets[1].y - self.ball.radius
-                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-            elif (self.ball.y - self.ball.radius) < self.pallets[0].y:
-                self.ball.y = self.pallets[0].y + self.ball.radius
-                BALL_SPEED_Y = -BALL_SPEED_Y  # Y speed of the ball is then reversed
-                """
-
     @staticmethod
     def draw_background(screen):
         """
